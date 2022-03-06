@@ -39,7 +39,7 @@ impl Screen{
     }
     fn check_size_error(&self) -> &str{
         if let Some((width, height)) = term_size::dimensions() {
-            if width != self.width.try_into().unwrap() || height != self.height.try_into().unwrap() {
+            if width != self.width || height != self.height {
                 ERROR_MSG_SIZE_IS_NOT_CORRECT
             }else{
                 ERROR_MSG_TERMINAL_IS_NOT_WORKING
