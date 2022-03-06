@@ -61,9 +61,9 @@ impl Screen{
         self.stream.fg(term::color::WHITE).unwrap();
         writeln!(self.stream, "{}", WELCOME_INFO).unwrap();
     }
-    pub fn flush_screen(&mut self, msg: &str){
+    pub fn flush_screen(&mut self){
         self.stream.fg(term::color::WHITE).unwrap();
-        writeln!(self.stream, "{}", msg).unwrap();
+        writeln!(self.stream, "{}", self.info).unwrap();
         self.stream.flush().unwrap();
     }
 }
