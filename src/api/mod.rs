@@ -3,10 +3,9 @@ pub mod screen;
 pub mod keyboard;
 pub mod themes;
 
-use crate::message::*;
-
-use std::io::Read;
+use std::io::BufReader;
 use std::fs::File;
+use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
@@ -29,21 +28,15 @@ pub struct BaizeConfiguration{
     pub plugin_cache_path: String,
 }
 
-pub fn read_baize_configuration() -> Result<Box<BaizeConfiguration>,&'static str>{
-    let file = match File::open("baize.json"){
-        Ok(mut file) => {
-            let mut config_string = String::new();
-            file.read_to_string(&mut config_string).unwrap();
-            let config:BaizeConfiguration = serde_json::from_str(&config_string).unwrap();
-            Ok(Box::from(config))
-        },
-        Err(_) => Err(ERROR_MSG_CAN_NOT_OPEN_FILE),
-    };
-    file
+pub fn read_baize_configuration() -> Result<Box<BaizeConfiguration>>{
+    let file = File::open("baize.json")?;
+    let reader = BufReader::new(file);
+    let config:BaizeConfiguration = serde_json::from_reader(reader)?;
+    Ok(Box::new(config))
 }
 
 #[cfg(test)]
-mod tests {
+mod test {
 
     #[test]
     fn test_read_baize_configuration() {
