@@ -30,23 +30,23 @@ pub struct BaizeConfiguration{
 }
 
 pub fn read_baize_configuration() -> Result<Box<BaizeConfiguration>,&'static str>{
-    let config_file = File::open("baize.json");
-    match config_file{
+    let file = match File::open("baize.json"){
         Ok(mut file) => {
             let mut config_string = String::new();
-            file.read_to_string(&mut config_string);
+            file.read_to_string(&mut config_string).unwrap();
             let config:BaizeConfiguration = serde_json::from_str(&config_string).unwrap();
             Ok(Box::from(config))
         },
-        Err(_) => Err(ERROR_MSG_CAN_NOT_OPEN_FILE)
-    }
+        Err(_) => Err(ERROR_MSG_CAN_NOT_OPEN_FILE),
+    };
+    file
 }
 
 #[cfg(test)]
 mod tests {
 
     #[test]
-    fn testall() {
+    fn test_read_baize_configuration() {
         use crate::api::read_baize_configuration;
 
         let result = read_baize_configuration();
