@@ -17,10 +17,6 @@ pub struct Color{
     themes_scheme: String,
 }
 
-pub struct Render{
-
-}
-
 impl Screen{
     pub fn new() -> Self{
         Screen{

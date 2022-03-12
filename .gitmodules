@@ -1,3 +1,0 @@
-[submodule "src/runtime/GloomScript"]
-	path = src/runtime/GloomScript
-	url = https://github.com/Xie-Jason/GloomScript.git
