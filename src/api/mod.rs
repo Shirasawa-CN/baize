@@ -3,6 +3,10 @@ pub mod screen;
 pub mod keyboard;
 pub mod themes;
 
+use crate::message::*;
+
+use std::io::Read;
+use std::fs::File;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
@@ -25,34 +29,27 @@ pub struct BaizeConfiguration{
     pub plugin_cache_path: String,
 }
 
+pub fn read_baize_configuration() -> Result<Box<BaizeConfiguration>,&'static str>{
+    let config_file = File::open("baize.json");
+    match config_file{
+        Ok(mut file) => {
+            let mut config_string = String::new();
+            file.read_to_string(&mut config_string);
+            let config:BaizeConfiguration = serde_json::from_str(&config_string).unwrap();
+            Ok(Box::from(config))
+        },
+        Err(_) => Err(ERROR_MSG_CAN_NOT_OPEN_FILE)
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    #[test]
-    fn configuration_test() {
-        use crate::api::BaizeConfiguration;
-        let json = r#"
-        {
-            "number_of_codes": true,
-            "highlight": true,
-            "status_plugins": true,
-            "debug_plugins": true,
-            "store_plugins": true,
-            "plugins": [
-                "plugin1",
-                "plugin2"
-            ],
-            "plugin_path": "plugin_path",
-            "plugin_cache_path": "plugin_cache_path"
-        }"#;
 
-        let test:BaizeConfiguration = serde_json::from_str(json).unwrap();
-        assert_eq!(test.number_of_codes, true);
-        assert_eq!(test.highlight, true);
-        assert_eq!(test.status_plugins, true);
-        assert_eq!(test.store_plugins, true);
-        assert_eq!(test.debug_plugins, true);
-        assert_eq!(test.plugins.len(), 2);
-        assert_eq!(test.plugin_path, "plugin_path");
-        assert_eq!(test.plugin_cache_path, "plugin_cache_path");
+    #[test]
+    fn testall() {
+        use crate::api::read_baize_configuration;
+
+        let result = read_baize_configuration();
+        assert_eq!(result.is_ok(), true);
     }
 }

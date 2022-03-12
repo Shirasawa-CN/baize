@@ -21,3 +21,4 @@ pub const ERROR_MSG_CAN_NOT_RENAME_DIR: &str = "Error:Can not rename dir!";
 pub const ERROR_MSG_CAN_NOT_MOVE_FILE: &str = "Error:Can not move file!";
 pub const ERROR_MSG_CAN_NOT_MOVE_DIR: &str = "Error:Can not move dir!";
 pub const ERROR_MSG_CAN_NOT_CONNECT_TO_LSP: &str = "Error:Can not connect to LSP!";
+pub const ERROR_MSG_INTERNAL_ERROR: &str = "Error:Internal error!";
