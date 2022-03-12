@@ -1,5 +1,14 @@
-use crate::message::*;
+use anyhow::Result;
 extern crate term;
+
+//欢迎信息
+pub const WELCOME_INFO: &str  = "
+Copyright (c) 2022 by Ruigang Zhang
+This Source Code Form is subject to the terms of the MIT LICENSE. 
+Baize is an experimental project for junior middle school students.
+Because I'm a junior high school student, I can't fix and find bugs many times, so welcome to submit pull requests.
+中考加油！
+";
 
 //定义一个屏幕数据结构体
 pub struct Screen{
@@ -34,16 +43,16 @@ impl Screen{
             self.height = height;
         }
     }
-    pub fn check_size_error(&mut self) -> Result<(),&str>{
+    pub fn check_size_error(&mut self) -> Result<()>{
         if let Some((width, height)) = term_size::dimensions() {
             if width != self.width || height != self.height {
                 self.get_size();
-                Ok(()) 
+                Ok(())
             }else{
-                Err(ERROR_MSG_TERMINAL_IS_NOT_WORKING)
+                Err(anyhow::anyhow!("term_size::dimensions() error"))
             }
-        } else {
-            Err(ERROR_MSG_TERMINAL_IS_NOT_WORKING)
+        }else{
+            Err(anyhow::anyhow!("term_size::dimensions() error"))
         }
     }
     pub fn out_put_to_screen(&self){
