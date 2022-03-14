@@ -28,7 +28,7 @@ pub struct BaizeConfiguration{
     pub plugin_cache_path: String,
 }
 
-pub fn read_baize_configuration() -> Result<Box<BaizeConfiguration>>{
+pub async fn read_baize_configuration() -> Result<Box<BaizeConfiguration>>{
     let file = File::open("baize.json")?;
     let reader = BufReader::new(file);
     let config:BaizeConfiguration = serde_json::from_reader(reader)?;
@@ -42,7 +42,9 @@ mod test {
     fn test_read_baize_configuration() {
         use crate::api::read_baize_configuration;
 
-        let result = read_baize_configuration();
-        assert_eq!(result.is_ok(), true);
+        let _a = async move{
+            let result = read_baize_configuration();
+            assert!(result.await.is_ok());
+        };
     }
 }

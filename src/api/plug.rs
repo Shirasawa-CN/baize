@@ -3,8 +3,8 @@ use crate::api::read_baize_configuration;
 use anyhow::Result;
 use std::process::Command;
 
-pub fn download_plug() -> Result<()> {
-    let config = read_baize_configuration()?;
+pub async fn download_plug() -> Result<()> {
+    let config = read_baize_configuration().await?;
 
     let url = format!("https://github.com/");
     let path = format!("{}", config.plugin_path);
@@ -24,8 +24,8 @@ pub fn download_plug() -> Result<()> {
     Ok(())
 }
 
-pub fn upgrade_plug() -> Result<()> {
-    let config = read_baize_configuration()?;
+pub async fn upgrade_plug() -> Result<()> {
+    let config = read_baize_configuration().await?;
 
     let url = format!("https://github.com/");
     let path = format!("{}", config.plugin_path);
@@ -43,4 +43,25 @@ pub fn upgrade_plug() -> Result<()> {
         }
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use crate::api::plug::{download_plug, upgrade_plug};
+
+    #[test]
+    fn test_download_plug() {
+        let _a = async move {
+            let result = download_plug();
+            assert!(result.await.is_ok());
+        };
+    }
+
+    #[test]
+    fn test_upgrade_plug() {
+        let _a = async move {
+            let result = upgrade_plug();
+            assert!(result.await.is_ok());
+        };
+    }
 }
