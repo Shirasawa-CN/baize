@@ -1,15 +1,15 @@
+pub mod keyboard;
 pub mod plug;
 pub mod screen;
-pub mod keyboard;
 pub mod themes;
 
-use std::io::BufReader;
-use std::fs::File;
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
+use std::fs::File;
+use std::io::BufReader;
 
 #[derive(Serialize, Deserialize)]
-pub struct BaizeConfiguration{
+pub struct BaizeConfiguration {
     //代码行数
     pub number_of_codes: bool,
     //高亮设置
@@ -28,10 +28,10 @@ pub struct BaizeConfiguration{
     pub plugin_cache_path: String,
 }
 
-pub async fn read_baize_configuration() -> Result<Box<BaizeConfiguration>>{
+pub async fn read_baize_configuration() -> Result<Box<BaizeConfiguration>> {
     let file = File::open("baize.json")?;
     let reader = BufReader::new(file);
-    let config:BaizeConfiguration = serde_json::from_reader(reader)?;
+    let config: BaizeConfiguration = serde_json::from_reader(reader)?;
     Ok(Box::new(config))
 }
 
@@ -42,7 +42,7 @@ mod test {
     fn test_read_baize_configuration() {
         use crate::api::read_baize_configuration;
 
-        let _a = async move{
+        let _a = async move {
             let result = read_baize_configuration();
             assert!(result.await.is_ok());
         };
