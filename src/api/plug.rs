@@ -10,7 +10,7 @@ pub async fn download_plug() -> Result<()> {
     let path = format!("{}", config.plugin_path);
 
     for plugin in config.plugins {
-        let plugin_name = plugin.split("/").last().unwrap();
+        let plugin_name = plugin.split('/').last().unwrap();
         let plugin_path = format!("{}/{}", path, plugin_name);
         let plugin_url = format!("{}/{}", url, plugin);
 
@@ -31,7 +31,7 @@ pub async fn upgrade_plug() -> Result<()> {
     let path = format!("{}", config.plugin_path);
 
     for plugin in config.plugins {
-        let plugin_name = plugin.split("/").last().unwrap();
+        let plugin_name = plugin.split('/').last().unwrap();
         let plugin_path = format!("{}/{}", path, plugin_name);
         let plugin_url = format!("{}/{}", url, plugin);
 
