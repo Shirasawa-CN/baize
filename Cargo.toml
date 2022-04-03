@@ -1,6 +1,6 @@
 [package]
 name = "baize"
-version = "0.0.1"
+version = "0.0.1-Chinese-New-Year"
 edition = "2021"
 license = "MIT"
 authors = ["Ruigang Zhang <3489840593@qq.com>"]
@@ -14,3 +14,4 @@ serde = {version = "1.0.136",features = ["derive"]}
 anyhow = "1.0.56"
 tokio = {version = "1.17.0",features = ["full"]}
 mini-redis = "0.4.1"
+termion = "1.5.6"

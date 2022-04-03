@@ -35,3 +35,12 @@ jk :ESC
 Tab :下一个补全选项
 Shift Tab :上一个补全选项
 */
+
+pub fn ctrl_byte(key: char) -> u8 {
+    let byte = key as u8;
+    byte & 0x1F
+}
+pub fn to_u8(key: char) -> u8 {
+    let byte = key as u8;
+    byte
+}
