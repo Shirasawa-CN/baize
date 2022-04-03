@@ -38,9 +38,20 @@ Shift Tab :上一个补全选项
 
 pub fn ctrl_byte(key: char) -> u8 {
     let byte = key as u8;
-    byte & 0x1F
+    byte & 0x11
+}
+pub fn shift_byte(key: char) -> u8 {
+    let byte = key as u8;
+    byte & 0x10
+}
+pub fn alt_byte(key: char) -> u8 {
+    let byte = key as u8;
+    byte & 0x12
+}
+pub fn tab_byte(key: char) -> u8 {
+    let byte = key as u8;
+    byte & 0x09
 }
 pub fn to_u8(key: char) -> u8 {
-    let byte = key as u8;
-    byte
+    key as u8
 }

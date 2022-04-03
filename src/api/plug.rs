@@ -45,17 +45,17 @@ pub async fn upgrade_plug() -> Result<()> {
     Ok(())
 }
 
-pub async fn run_plug() -> Result<()>{
+pub async fn run_plug() -> Result<()> {
     let config = read_baize_configuration().await?;
 
     let path = format!("{}", config.plugin_path);
     for plugin in config.plugins {
         let plugin_name = plugin.split('/').last().unwrap();
         let plugin_path = format!("{}/{}", path, plugin_name);
-        
+
         if std::path::Path::new(&plugin_path).exists() {
             Command::new("./")
-                .args(&[&plugin_name,"main"])
+                .args(&[&plugin_name, "main"])
                 .output()
                 .expect("pull失败，请先检查网络环境或是否安装了所有插件");
         }
