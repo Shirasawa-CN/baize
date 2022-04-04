@@ -24,8 +24,6 @@ pub struct BaizeConfiguration {
     pub plugins: Vec<String>,
     //插件存放路径
     pub plugin_path: String,
-    //插件缓存路径
-    pub plugin_cache_path: String,
 }
 
 pub async fn read_baize_configuration() -> Result<Box<BaizeConfiguration>> {
