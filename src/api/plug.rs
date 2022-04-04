@@ -17,8 +17,7 @@ pub async fn download_plug() -> Result<()> {
         if std::path::Path::new(&plugin_path).exists() {
             Command::new("git")
                 .args(&["clone", &plugin_url, &plugin_path])
-                .output()
-                .expect("clone失败，请检查网络环境");
+                .output()?;
         }
     }
     Ok(())
@@ -38,8 +37,7 @@ pub async fn upgrade_plug() -> Result<()> {
         if std::path::Path::new(&plugin_path).exists() {
             Command::new("git")
                 .args(&["pull", &plugin_url, &plugin_path])
-                .output()
-                .expect("pull失败，请先检查网络环境或是否安装了所有插件");
+                .output()?;
         }
     }
     Ok(())
@@ -54,10 +52,7 @@ pub async fn run_plug() -> Result<()> {
         let plugin_path = format!("{}/{}", path, plugin_name);
 
         if std::path::Path::new(&plugin_path).exists() {
-            Command::new("./")
-                .args(&[&plugin_name, "main"])
-                .output()
-                .expect("pull失败，请先检查网络环境或是否安装了所有插件");
+            Command::new("./").args(&[&plugin_name, "main"]).output()?;
         }
     }
     Ok(())

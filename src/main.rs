@@ -1,7 +1,8 @@
-use baize::api::read_baize_configuration;
+use baize::api::plug::upgrade_plug;
+use baize::api::{plug::download_plug, read_baize_configuration};
 use baize::keyboard::*;
 
-use anyhow::Result;
+use anyhow::{Ok, Result};
 use std::io::{self, stdout, Read};
 use termion::raw::IntoRawMode;
 
@@ -23,7 +24,7 @@ impl Status {
         self.change = false;
         self.buffer.clear();
     }
-    fn save(&mut self) {
+    fn save(&mut self) -> Result<()> {
         self.change = false;
         todo!("保存文件的功能");
     }
@@ -39,6 +40,11 @@ async fn main() -> Result<()> {
     let mut status = Status::new();
     status.get_buffer();
 
+    tokio::spawn(async move {
+        download_plug().await;
+        upgrade_plug().await;
+    });
+
     for b in io::stdin().bytes() {
         let b = b?;
         let _c = b as char;
@@ -46,8 +52,8 @@ async fn main() -> Result<()> {
         if b == to_u8('q') {
             if status.change == false {
                 break;
-            } else {
-                status.save();
+            } else if status.change == true {
+                status.save()?;
                 break;
             }
         }
