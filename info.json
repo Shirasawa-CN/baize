@@ -1,0 +1,9 @@
+{
+    "version":"0.0.1",
+    "lib_version":"0.0.1",
+    "plugins": [
+        "plugin1",
+        "plugin2"
+    ],
+    "status_plugins":"true"
+}

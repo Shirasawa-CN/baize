@@ -8,6 +8,5 @@
         "plugin1",
         "plugin2"
     ],
-    "plugin_path": "plugin_path",
-    "plugin_cache_path": "plugin_cache_path"
+    "plugin_path": "plugin_path"
 }
