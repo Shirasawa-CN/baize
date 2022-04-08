@@ -1,8 +1,9 @@
-use anyhow::{ Result};
+use anyhow::Result;
 use baize::application::BaizeApplication;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    BaizeApplication::run().await?;
+    let mut baize_application = BaizeApplication::new();
+    baize_application.run().await?;
     Ok(())
 }

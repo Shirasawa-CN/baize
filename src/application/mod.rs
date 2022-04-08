@@ -1,19 +1,21 @@
-use crate::api::plug::upgrade_plug;
-use crate::api::{configuration::get_baize_configuration, plug::download_plug};
-use crate::keyboard::*;
+use crate::api::configuration::get_baize_configuration;
 
-use anyhow::Result;
-use std::io::{self, stdout, Read};
-use termion::raw::IntoRawMode;
+use anyhow::{Ok, Result};
+use std::io::{stdin, stdout, Write};
+use termion::{event::Key, input::TermRead, raw::IntoRawMode};
 
-struct Status {
+#[derive(Clone)]
+pub struct BaizeApplication {
     change: bool,
+    quit: bool,
     buffer: Vec<String>,
 }
-impl Status {
-    fn new() -> Status {
-        Status {
+
+impl BaizeApplication {
+    pub fn new() -> Self {
+        Self {
             change: false,
+            quit: false,
             buffer: Vec::new(),
         }
     }
@@ -28,41 +30,64 @@ impl Status {
         self.change = false;
         todo!("保存文件的功能");
     }
-    pub fn get_buffer(&self) -> &Vec<String> {
+    fn get_buffer(&self) -> &Vec<String> {
         &self.buffer
     }
-}
-
-pub struct BaizeApplication;
-
-impl BaizeApplication {
-    pub async fn run() -> Result<()> {
-        let _baize_config = get_baize_configuration();
-        let _stdout = stdout().into_raw_mode()?;
-        let mut status = Status::new();
-        status.get_buffer();
-
-        tokio::spawn(async move {
-            todo!();
-            /* TODO
-            需要先读取配置文件，检查是否有插件缺少，如果有，则下载插件
-            然后检查插件是否有更新，如果有，则更新插件
-            */
-        });
-
-        for b in io::stdin().bytes() {
-            let b = b?;
-            let _c = b as char;
-
-            if b == to_u8('q') {
-                if status.change == false {
-                    break;
-                } else if status.change == true {
-                    status.save()?;
-                    break;
-                }
+    fn read_key(&self) -> Result<Key, std::io::Error> {
+        loop {
+            if let Some(key) = stdin().keys().next() {
+                return key;
             }
         }
+    }
+    fn refresh_screen(&self) -> Result<()> {
+        println!("{}{}", termion::clear::All, termion::cursor::Goto(1, 1));
+        stdout().flush()?;
+        Ok(())
+    }
+    fn process_keypress(&mut self) -> Result<()> {
+        let pressed_key = self.read_key()?;
+        match pressed_key {
+            Key::Char('q') => self.quit = true,
+            _ => (),
+        }
+        Ok(())
+    }
+    fn draw_rows(&self) {
+        for _ in 0..24 {
+            print!("~\r")
+        }
+    }
+    fn feedback(&self, err: anyhow::Error) {
+        self.refresh_screen().unwrap();
+        panic!("{}", err);
+    }
+    pub async fn run(&mut self) -> Result<()> {
+        let _baize_config = get_baize_configuration();
+        let _stdout = stdout().into_raw_mode()?;
+        self.get_buffer();
+
+        /*tokio::spawn(async move {
+            todo!();
+            需要先读取配置文件，检查是否有插件缺少，如果有，则下载插件
+            然后检查插件是否有更新，如果有，则更新插件
+        });*/
+
+        loop {
+            if let Err(err) = self.refresh_screen() {
+                self.feedback(err);
+            }
+            if self.quit {
+                break;
+            } else {
+                self.draw_rows();
+                print!("{}", termion::cursor::Goto(1, 1));
+            }
+            if let Err(err) = self.process_keypress() {
+                self.feedback(err);
+            }
+        }
+
         Ok(())
     }
 }
