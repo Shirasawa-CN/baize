@@ -21,11 +21,11 @@ pub struct BaizeConfiguration {
     pub plugin_path: String,
 }
 
-pub async fn get_baize_configuration() -> Result<Box<BaizeConfiguration>> {
+pub async fn get_baize_configuration() -> Result<BaizeConfiguration> {
     let file = File::open("baize.json")?;
     let reader = BufReader::new(file);
     let config: BaizeConfiguration = serde_json::from_reader(reader)?;
-    Ok(Box::new(config))
+    Ok(config)
 }
 
 #[cfg(test)]

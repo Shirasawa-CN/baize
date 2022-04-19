@@ -15,11 +15,11 @@ pub struct BaizeConfiguration {
     pub status_plugins: bool,
 }
 
-pub async fn get_baize_info() -> Result<Box<BaizeInfo>> {
+pub async fn get_baize_info() -> Result<BaizeInfo> {
     let file = File::open("info.json")?;
     let reader = BufReader::new(file);
     let info: BaizeConfiguration = serde_json::from_reader(reader)?;
-    Ok(Box::new(info))
+    Ok(info)
 }
 
 #[cfg(test)]
