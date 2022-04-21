@@ -16,7 +16,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: Cpointerz/baize-core@master
+      with: submodule:true
     - name: Build
       run: cargo build --verbose
     - name: Run tests
@@ -28,7 +28,7 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
-    - uses: Cpointerz/baize-core@master
+      with: submodule:true
     - name: Build
       run: cargo build --verbose
     - name: Run tests
