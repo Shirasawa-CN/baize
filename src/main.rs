@@ -1,5 +1,7 @@
-use anyhow::Result;
 use baize::application::BaizeApplication;
+use baize_core::*;
+
+use anyhow::Result;
 
 #[tokio::main]
 async fn main() -> Result<()> {

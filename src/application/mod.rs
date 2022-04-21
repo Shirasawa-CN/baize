@@ -91,3 +91,9 @@ impl BaizeApplication {
         Ok(())
     }
 }
+
+impl Default for BaizeApplication {
+    fn default() -> Self {
+        Self::new()
+    }
+}
