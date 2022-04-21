@@ -1,0 +1,3 @@
+[submodule "src/baize-core"]
+	path = src/baize-core
+	url = git@github.com:Cpointerz/baize-core.git
