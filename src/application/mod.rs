@@ -1,11 +1,16 @@
 use crate::api::configuration::get_baize_configuration;
 
-use anyhow::{Ok, Result};
-use std::io::{stdin, stdout, Write};
-use termion::{event::Key, input::TermRead, raw::IntoRawMode};
+use anyhow::Result;
+use std::io::{self, stdin, stdout};
+use termion::event::Key;
 
-#[derive(Clone)]
+mod terminal;
+use crate::application::terminal::Terminal;
+
+ const VERSION: &str = env!("CARGO_PKG_VERSION");
+
 pub struct BaizeApplication {
+    terminal: Terminal,
     change: bool,
     quit: bool,
     buffer: Vec<String>,
@@ -14,6 +19,7 @@ pub struct BaizeApplication {
 impl BaizeApplication {
     pub fn new() -> Self {
         Self {
+            terminal: Terminal::new().expect("初始化失败"),
             change: false,
             quit: false,
             buffer: Vec::new(),
@@ -33,38 +39,43 @@ impl BaizeApplication {
     fn get_buffer(&self) -> &Vec<String> {
         &self.buffer
     }
-    fn read_key(&self) -> Result<Key, std::io::Error> {
-        loop {
-            if let Some(key) = stdin().keys().next() {
-                return key;
+    fn refresh_screen(&self) -> Result<()> {
+        Terminal::cursor_hide();
+        Terminal::clear_screen();
+        Terminal::cursor_position(0, 0);
+        Terminal::flush()?;
+        Ok(())
+    }
+
+    fn draw_rows(&self) {
+        let _terminal = Terminal::new();
+        let height = self.terminal.size().height;
+        for row in 0..height {
+            Terminal::clear_current_line();
+            if row == height / 3 {
+                let welcome_message = format!("         baize VERSION:{}", VERSION); 
+                let width = std::cmp::min(self.terminal.size().width as usize, welcome_message.len());
+                println!("{}\r", &welcome_message[..width])
+            }else{
+                println!("~\r");
             }
         }
     }
-    fn refresh_screen(&self) -> Result<()> {
-        println!("{}{}", termion::clear::All, termion::cursor::Goto(1, 1));
-        stdout().flush()?;
-        Ok(())
-    }
     fn process_keypress(&mut self) -> Result<()> {
-        let pressed_key = self.read_key()?;
+        let pressed_key = Terminal::read_key()?;
         match pressed_key {
             Key::Char('q') => self.quit = true,
             _ => (),
         }
         Ok(())
     }
-    fn draw_rows(&self) {
-        for _ in 0..24 {
-            print!("~\r")
-        }
-    }
     fn feedback(&self, err: anyhow::Error) {
         self.refresh_screen().unwrap();
         panic!("{}", err);
+        todo!("把panic替换为tracing");
     }
     pub async fn run(&mut self) -> Result<()> {
         let _baize_config = get_baize_configuration();
-        let _stdout = stdout().into_raw_mode()?;
         self.get_buffer();
 
         /*tokio::spawn(async move {
@@ -78,22 +89,18 @@ impl BaizeApplication {
                 self.feedback(err);
             }
             if self.quit {
+                Terminal::clear_screen();
                 break;
             } else {
                 self.draw_rows();
-                print!("{}", termion::cursor::Goto(1, 1));
             }
             if let Err(err) = self.process_keypress() {
                 self.feedback(err);
             }
+            Terminal::cursor_show();
+            Terminal::flush()?;
         }
 
         Ok(())
-    }
-}
-
-impl Default for BaizeApplication {
-    fn default() -> Self {
-        Self::new()
     }
 }
